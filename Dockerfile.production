@@ -1,0 +1,8 @@
+# PRODUCTION
+FROM scratch
+
+WORKDIR /usr/app
+
+COPY ./src/hello .
+
+CMD [ "./hello" ]
