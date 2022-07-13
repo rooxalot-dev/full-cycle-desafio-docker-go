@@ -1,0 +1,22 @@
+# DEV/BUILD
+FROM golang:1.18 as builder
+
+WORKDIR /usr/src/
+
+COPY ./src .
+
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY ./src/go.mod ./
+RUN go mod download && go mod verify
+
+COPY . .
+RUN go build
+
+# PRODUCTION/RUNNER
+FROM golang:1.18-alpine as runner
+
+WORKDIR /usr/app
+
+COPY --from=builder /usr/src/hello .
+
+ENTRYPOINT ./hello
